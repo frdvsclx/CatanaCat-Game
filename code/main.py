@@ -15,7 +15,7 @@ background_surf= pygame.image.load('images/backgrounds.png').convert_alpha() #co
 ground_surf= pygame.image.load('images/ground.png').convert_alpha()
 
 player_surf= pygame.image.load('images\katana kedy.png').convert_alpha()
-player_rect= player_surf.get_rect(midbottom= (40,281))
+player_rect= player_surf.get_rect(midbottom= (60,281))
 player_gravity= 0
 
 snail_surf = pygame.image.load('images/iskelet.png').convert_alpha()
@@ -29,12 +29,12 @@ while True:
         if event.type == pygame.QUIT: 
             pygame.quit()
             exit()
-        if event.type == pygame.MOUSEBUTTONDOWN: #down and up: clicking or not  
+        if event.type == pygame.MOUSEBUTTONDOWN and player_rect.bottom >=281: #down and up: clicking or not  
             if player_rect.collidepoint(event.pos): 
                    player_gravity = -20
                     
         if event.type == pygame.KEYDOWN: #check if there is a keyboard button have been pressed         
-             if event.key == pygame.K_SPACE:
+             if event.key == pygame.K_SPACE and player_rect.bottom >=281 :
                     player_gravity = -20
                                      
     #the longer you fall, the faster you fall 
@@ -53,7 +53,7 @@ while True:
     #player:
     player_gravity +=1
     player_rect.y += player_gravity
-    
+    if player_rect.bottom >=280: player_rect.bottom = 281
     screen.blit(player_surf,player_rect)
     
     
