@@ -5,7 +5,6 @@ from sys import exit
 
 pygame.init() #initializing pygame
 
-
 isgameactive= True
 screen=pygame.display.set_mode((800,400)) #creating display screen
 pygame.display.set_caption('Katana Run!') #naming the game
@@ -40,35 +39,35 @@ while True:
         if event.type == pygame.QUIT: 
             pygame.quit()
             exit()
-                
+            
+      
         if isgameactive: 
-            for i in range(0,tiles):
-                screen.blit(background_surf,(i*background_width + scroll,0))
-    
-    
-                scroll -=5
-                if abs(scroll) > background_width:
-                    scroll=0
-    
-               
             if event.type == pygame.MOUSEBUTTONDOWN and player_rect.bottom >=265: #down and up: clicking or not  
                 if player_rect.collidepoint(event.pos): 
                     player_gravity = -20
                         
-            if event.type == pygame.KEYDOWN: #check if there is a keyboard button have been pressed         
+            if event.type == pygame.KEYDOWN: #check if a key is pressed on the keyboard          
                 if event.key == pygame.K_SPACE and player_rect.bottom >=265 :
                         player_gravity = -20
                         
         else:
-            if event.type == pygame.KEYDOWN: #or event.key == pygame.MOUSEBUTTONDOWN:
+            if event.type == pygame.KEYDOWN: 
                 isgameactive=  True
                 cucumber_rect.left= 1000
                                         
     #the longer you fall, the faster you fall 
     
     if isgameactive:
+        
+        for i in range(0,tiles):
+            screen.blit(background_surf,(i*background_width + scroll,0))
+    
+    
+        scroll -=3
+        if abs(scroll) > background_width:
+            scroll=0
+                  
                      
-        screen.blit(background_surf,(0,0)) 
         screen.blit(ground_surf,(0,265)) #block image transfer// putting to surface 
         #pygame.draw.rect(screen,'black',score_rect) 
         #pygame.draw.line(screen,'gold',(0,0),(800,400),10)
@@ -87,6 +86,7 @@ while True:
         
         #collison
         if cucumber_rect.colliderect(player_rect): #player and snail if thouch  
+            pygame.draw.line
             isgameactive = False
     
     
