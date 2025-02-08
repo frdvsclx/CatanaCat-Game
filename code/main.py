@@ -1,62 +1,97 @@
 import pygame 
+import math
 from sys import exit
 
 
 pygame.init() #initializing pygame
 
+
+isgameactive= True
 screen=pygame.display.set_mode((800,400)) #creating display screen
-pygame.display.set_caption('Katana Run!')
-clock = pygame.time.Clock()
+pygame.display.set_caption('Katana Run!') #naming the game
+clock = pygame.time.Clock() #for fps stability
 font= pygame.font.Font('font/Pixeltype.ttf',50)
 
 
-#creating character surface
-background_surf= pygame.image.load('images/backgrounds.png').convert_alpha() #convert_alpha: python analizes images much easier
+#creating surface and importing images:  
+background_surf= pygame.image.load('images/sky2.png').convert_alpha() #convert_alpha: python analizes images much easier
+background_width= background_surf.get_width()
 ground_surf= pygame.image.load('images/ground.png').convert_alpha()
 
+#infinite sky
+scroll=0
+tiles= math.ceil(800 / background_width) +1
+
+#characters and snail:
 player_surf= pygame.image.load('images\katana kedy.png').convert_alpha()
-player_rect= player_surf.get_rect(midbottom= (60,281))
+player_rect= player_surf.get_rect(midbottom= (100,270))
 player_gravity= 0
 
-snail_surf = pygame.image.load('images/iskelet.png').convert_alpha()
-snail_rect = snail_surf.get_rect(midbottom= (500,280))
+cucumber_surf = pygame.image.load('images/cucumber.png').convert_alpha()
+cucumber_rect = cucumber_surf.get_rect(midbottom= (500,270))
 
 score_surf= font.render('my game',True,'Black')
 score_rect= score_surf.get_rect(center= (400,50)) 
 
+
 while True: 
+    
     for event in pygame.event.get(): #looking for inputs, event for real time actions 
         if event.type == pygame.QUIT: 
             pygame.quit()
             exit()
-        if event.type == pygame.MOUSEBUTTONDOWN and player_rect.bottom >=281: #down and up: clicking or not  
-            if player_rect.collidepoint(event.pos): 
-                   player_gravity = -20
-                    
-        if event.type == pygame.KEYDOWN: #check if there is a keyboard button have been pressed         
-             if event.key == pygame.K_SPACE and player_rect.bottom >=281 :
+                
+        if isgameactive: 
+            for i in range(0,tiles):
+                screen.blit(background_surf,(i*background_width + scroll,0))
+    
+    
+                scroll -=5
+                if abs(scroll) > background_width:
+                    scroll=0
+    
+               
+            if event.type == pygame.MOUSEBUTTONDOWN and player_rect.bottom >=265: #down and up: clicking or not  
+                if player_rect.collidepoint(event.pos): 
                     player_gravity = -20
-                                     
+                        
+            if event.type == pygame.KEYDOWN: #check if there is a keyboard button have been pressed         
+                if event.key == pygame.K_SPACE and player_rect.bottom >=265 :
+                        player_gravity = -20
+                        
+        else:
+            if event.type == pygame.KEYDOWN: #or event.key == pygame.MOUSEBUTTONDOWN:
+                isgameactive=  True
+                cucumber_rect.left= 1000
+                                        
     #the longer you fall, the faster you fall 
-                 
-    screen.blit(background_surf,(0,0)) 
-    screen.blit(ground_surf,(0,280)) #block image transfer// putting to surface 
-    #pygame.draw.rect(screen,'black',score_rect) 
-    #pygame.draw.line(screen,'gold',(0,0),(800,400),10)
-    screen.blit(score_surf,score_rect)
+    
+    if isgameactive:
+                     
+        screen.blit(background_surf,(0,0)) 
+        screen.blit(ground_surf,(0,265)) #block image transfer// putting to surface 
+        #pygame.draw.rect(screen,'black',score_rect) 
+        #pygame.draw.line(screen,'gold',(0,0),(800,400),10)
+        screen.blit(score_surf,score_rect)
 
-    snail_rect.x -=4
-    if snail_rect.right <=0: snail_rect.left = 800
-    screen.blit(snail_surf,snail_rect)
+        cucumber_rect.x -=4
+        if cucumber_rect.right <=0: cucumber_rect.left = 800
+        screen.blit(cucumber_surf,cucumber_rect)
+        
+    
+        #player:
+        player_gravity +=1
+        player_rect.y += player_gravity
+        if player_rect.bottom >=265: player_rect.bottom = 270
+        screen.blit(player_surf,player_rect)
+        
+        #collison
+        if cucumber_rect.colliderect(player_rect): #player and snail if thouch  
+            isgameactive = False
     
     
-    #player:
-    player_gravity +=1
-    player_rect.y += player_gravity
-    if player_rect.bottom >=280: player_rect.bottom = 281
-    screen.blit(player_surf,player_rect)
-    
-    
+    #else: 
+        
     
     #-----------stuff--------------------
     #keys= pygame.key.get_pressed() ##outputs 0 or 1, basılanları saklar?    
