@@ -2,15 +2,20 @@ import pygame
 import math
 from sys import exit
 
+def display_score():
+    current_time= pygame.time.get_ticks() - start_time #gives time since pygame started
+    score_surf=font.render(current_time/1000,False,'black')
+    score_rect= score_surf.get_rect(center= (400,50)) 
+    screen.blit(score_surf,score_rect)   
 
 pygame.init() #initializing pygame
 
-isgameactive= True
 screen=pygame.display.set_mode((800,400)) #creating display screen
 pygame.display.set_caption('Katana Run!') #naming the game
 clock = pygame.time.Clock() #for fps stability
 font= pygame.font.Font('font/Pixeltype.ttf',50)
-
+isgameactive= True
+start_time= 0
 
 #creating surface and importing images:  
 background_surf= pygame.image.load('images/sky2.png').convert_alpha() #convert_alpha: python analizes images much easier
@@ -29,8 +34,8 @@ player_gravity= 0
 cucumber_surf = pygame.image.load('images/cucumber.png').convert_alpha()
 cucumber_rect = cucumber_surf.get_rect(midbottom= (500,270))
 
-score_surf= font.render('my game',True,'Black')
-score_rect= score_surf.get_rect(center= (400,50)) 
+#score_surf= font.render('my game',True,'Black')
+#score_rect= score_surf.get_rect(center= (400,50)) 
 
 
 while True: 
@@ -51,9 +56,10 @@ while True:
                         player_gravity = -20
                         
         else:
-            if event.type == pygame.KEYDOWN: 
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE: 
                 isgameactive=  True
                 cucumber_rect.left= 1000
+                start_time= pygame.time.get_ticks()
                                         
     #the longer you fall, the faster you fall 
     
@@ -71,7 +77,7 @@ while True:
         screen.blit(ground_surf,(0,265)) #block image transfer// putting to surface 
         #pygame.draw.rect(screen,'black',score_rect) 
         #pygame.draw.line(screen,'gold',(0,0),(800,400),10)
-        screen.blit(score_surf,score_rect)
+        #screen.blit(score_surf,score_rect)
 
         cucumber_rect.x -=4
         if cucumber_rect.right <=0: cucumber_rect.left = 800
